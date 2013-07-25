@@ -1,0 +1,58 @@
+#jslint-config, #jslint-output {
+    display: block;
+    height: 400px;
+    overflow: scroll;
+    border: 1px solid #333;
+}
+
+#jslint-config {
+    width: 220px;
+    padding: 0 10px;
+    float: left;
+}
+
+#jslint-config table { margin-top: 0; }
+#jslint-config td { border: none; }
+#jslint-config select { padding: 3px 5px; }
+
+#jslint-output {
+    margin-left: 220px;
+    padding: 10px;
+    line-height: 150%;
+}
+
+#jslint-output cite {
+    padding: 10px 0;
+    font-style: italic;
+    color: #ccc;
+}
+
+#jslint-output address {
+    font-weight: bold;
+    margin-top: 15px;
+    font-style: normal;
+    font-size: 1.2em;
+    color: #fff;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+#jslint-output cite:first-of-type address { margin-top: 0; }
+
+#jslint-output cite address { border-bottom: 1px solid #333; }
+
+#jslint-output pre {
+    display: block;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 3px;
+    font-family: monospace, sans-serif;
+    margin: 10px 0;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+}
+
+#run-lint {
+    margin: 20px 0 0 0;
+}

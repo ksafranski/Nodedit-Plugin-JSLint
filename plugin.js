@@ -2,33 +2,69 @@
  * Define plugin namespace
  * @namespace nodedit.plugin.example
  */
-nodedit.plugin.example = {
+nodedit.plugin.jslint = {
 
-    // Define template(s) to load
-    // On plugin initialization this object is modified to include the proper path for loading 
-    // the template. For example, if you want to load a modal, something like this would work:
-    // nodedit.modal.open(500, 'My Title', this.templates.dialog, {...data...}, function(){ ...callback... });
+    // Define template(s)
     templates: {
         dialog: 'dialog.tpl'
     },
     
-    // Define icon associated with plugin (http://fortawesome.github.io/Font-Awesome/icons/)
-    icon: 'icon-asterisk',
+    // Define icon associated with plugin
+    icon: 'icon-ok-sign',
     
-    // Define any dependencies, .js or .css, that the plugin requires (relative to this file)
+    // Define any dependencies
     dependencies: [
-        'deps/example_dep.js',
-        'deps/example_css.css'
+        'deps/jslint.js',
+        'deps/jslint_labels.js',
+        'deps/jslint.css'
     ],
     
     /**
-     * Define initial (onload) actions
-     * @method nodedit.plugin.example.init
+     * Checks active editor for compatibility and retruns content
+     * @method nodedit.plugin.jslint.checkEditor
+     * @returns {bool|string} Either returns the code or false if editor not .js
      */
-    init: function () {
+    getEditor: function () {
         
-        // Place initialiazation / startup code here, omit init completely if not needed
+        var id = nodedit.tabs.getActive(),
+            ext = '';
         
+        if (nodedit.editor.instances.hasOwnProperty(id)) {
+            ext = nodedit.filemanager.getFileExtension(nodedit.editor.instances[id].path);
+        }
+
+        // Check extension
+        if (ext==='js') {
+            return nodedit.editor.getContent(id);
+        } else {
+            nodedit.message.error('Please open a .js file in the editor');
+            return false;
+        }
+    },
+    
+    /**
+     * Runs lint on the code
+     * @method nodedit.plugin.jslint.runLint
+     * @param {string} code The code to be checked
+     * @param {object} options The options for the lint process
+     */
+    runLint: function (code, options) {
+        var data, errors, report, properties_report;
+            
+        // Lint code
+        JSLINT(code, options);
+            
+        data = JSLINT.data();
+        errors = JSLINT.error_report(data);
+        report = JSLINT.report(data);
+        properties_report = JSLINT.properties_report(JSLINT.property);
+        
+        // Output report
+        $('#jslint-output').html(errors); 
+        // Trim leading whitespace on <pre> elements
+        $('#jslint-output pre').each(function(){
+           $(this).html($(this).html().trim());
+        });
     },
     
     /**
@@ -36,7 +72,72 @@ nodedit.plugin.example = {
      * @method nodedit.plugin.example.onMenu
      */
     onMenu: function () {
-        console.log('Example Plugin Opened From Menu');
+        var _this = this,
+            // Get code, returns false if no vaible editor instance
+            code = _this.getEditor(),
+            // Get config from store or load defaults
+            options = {
+                ass       : true,
+                bitwise   : true,
+                browser   : true,
+                closure   : true,
+                continue  : true,
+                couch     : true,
+                debug     : true,
+                devel     : true,
+                eqeq      : true,
+                es5       : true,
+                evil      : true,
+                forin     : true,
+                indent    :   10,
+                maxerr    : 1000,
+                maxlen    :  256,
+                newcap    : true,
+                node      : true,
+                nomen     : true,
+                passfail  : true,
+                plusplus  : true,
+                properties: true,
+                regexp    : true,
+                rhino     : true,
+                unparam   : true,
+                sloppy    : true,
+                stupid    : true,
+                sub       : true,
+                todo      : true,
+                vars      : true,
+                white     : true
+            };
+            
+        if ( nodedit.store('jslint_config') !== null ) {
+            options = JSON.parse(nodedit.store('jslint_config'));
+        }
+        
+        if (code) {
+            nodedit.modal.open(800,'JSLint',_this.templates.dialog, options, function() {
+                _this.runLint(code, options);
+                $('#run-lint').on('click', function (e) {
+                    e.preventDefault();
+                    // Compile options
+                    $('#jslint-config select').each(function () {
+                        if ($(this).find("option:selected").val()==='false') {
+                            options[$(this).attr('name')] = false;
+                        } else {
+                            options[$(this).attr('name')] = true;
+                        }
+                    });
+                    
+                    options.indent = 10;
+                    options.maxerr = 1000;
+                    options.maxlen = 256;
+                    
+                    // Store config
+                    nodedit.store('jslint_config', options);
+                    // Run Lint
+                    _this.runLint(code, options);
+                });
+            });
+        }
     }
   
 };
