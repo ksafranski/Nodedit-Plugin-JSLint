@@ -1,6 +1,6 @@
 /**
- * Define plugin namespace
- * @namespace nodedit.plugin.example
+ * JSLint plugin for Nodedit
+ * @namespace nodedit.plugin.jslint
  */
 nodedit.plugin.jslint = {
 
