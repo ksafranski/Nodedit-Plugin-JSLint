@@ -16,4 +16,11 @@
 
 <div id="jslint-output"></div>
 
+<hr>
+
+<div id="jslint-globals">
+    <label>Specify Globals</label>
+    <input type="text" placeholder="window,jQeury,..."></input>
+</div>
+
 <button id="run-lint">Lint Code</button>

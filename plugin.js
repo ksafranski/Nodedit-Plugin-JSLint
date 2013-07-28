@@ -48,8 +48,10 @@ nodedit.plugin.jslint = {
      * @param {string} code The code to be checked
      * @param {object} options The options for the lint process
      */
-    runLint: function (code, options) {
+    runLint: function (code, options, globals) {
         var data, errors, report, properties_report;
+        
+        globals = globals || {};
             
         // Lint code
         JSLINT(code, options);
@@ -75,6 +77,7 @@ nodedit.plugin.jslint = {
         var _this = this,
             // Get code, returns false if no vaible editor instance
             code = _this.getEditor(),
+            globals = {},
             // Get config from store or load defaults
             options = {
                 ass       : true,
@@ -127,6 +130,13 @@ nodedit.plugin.jslint = {
                         }
                     });
                     
+                    var globalsArr = $('#jslint-globals input').val().split(',');
+                    for (var i=0, z=globalsArr.length; i<z; i++) {
+                        globals[globalsArr[i].trim()] = true;
+                    }
+                    
+                    console.log(globals);
+                    
                     options.indent = 10;
                     options.maxerr = 1000;
                     options.maxlen = 256;
@@ -134,7 +144,7 @@ nodedit.plugin.jslint = {
                     // Store config
                     nodedit.store('jslint_config', options);
                     // Run Lint
-                    _this.runLint(code, options);
+                    _this.runLint(code, options, globals);
                 });
             });
         }

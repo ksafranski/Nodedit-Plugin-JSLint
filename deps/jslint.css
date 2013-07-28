@@ -1,6 +1,6 @@
 #jslint-config, #jslint-output {
     display: block;
-    height: 400px;
+    height: 300px;
     overflow: scroll;
     border: 1px solid #333;
 }
@@ -14,6 +14,8 @@
 #jslint-config table { margin-top: 0; }
 #jslint-config td { border: none; }
 #jslint-config select { padding: 3px 5px; }
+
+#jslint-globals input { font-family: monospace; }
 
 #jslint-output {
     margin-left: 220px;
@@ -54,5 +56,5 @@
 }
 
 #run-lint {
-    margin: 20px 0 0 0;
+    margin: 10px 0 0 0;
 }
